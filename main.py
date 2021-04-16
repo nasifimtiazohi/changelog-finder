@@ -1,6 +1,5 @@
-import sys, os
+import os
 import subprocess, shlex
-import glob
 
 #https://keepachangelog.com/en/1.0.0/
 #Call it CHANGELOG.md. Some projects use HISTORY, NEWS or RELEASES.
@@ -18,7 +17,7 @@ def is_documentation(file):
     for format in _documentation_formats:
         if file.lower().endswith(format):
             return True
-    return True
+    return False
 
 def locate_changelog(path):
     assert is_git_repository(path)
