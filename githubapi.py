@@ -49,12 +49,20 @@ def get_release_note(owner, name, version):
     totalCount=None
     releases = []
     while True:
-        data=  run_query(query, variables)['repository']['releases']
+        data=  run_query(query, variables)
+
+        if not data or 'repository' not in data:
+            return None
+        data = data['repository']
+        if not data or 'releases' not in data or not data['releases']:
+            return None
+        data= data['releases']
+        
         totalCount=data['totalCount']
         releases.extend(data['nodes'])
         
         for node in data['nodes']:
-            if node['name'].endswith(version):
+            if (node['name'] and node['name'].endswith(version)) or (node['tagName'] and node['tagName'].endswith(version)):
                 return node['url']
 
         if data['pageInfo']['hasNextPage']:
