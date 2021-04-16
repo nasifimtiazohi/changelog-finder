@@ -55,7 +55,7 @@ def get_release_note(owner, name, version):
         
         for node in data['nodes']:
             if node['name'].endswith(version):
-                return node
+                return node['url']
 
         if data['pageInfo']['hasNextPage']:
             variables["after"]=data['pageInfo']['endCursor']
