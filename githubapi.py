@@ -15,7 +15,7 @@ def run_query(query, variables):
         return request.json()['data']
     else:
         raise Exception("Query failed to run by returning code of {}. {}".format(
-                request.status_code, query))
+                request.status_code, variables))
 
 
 def get_release_note(owner, name, version):
@@ -59,11 +59,13 @@ def get_release_note(owner, name, version):
         data= data['releases']
         
         totalCount=data['totalCount']
+        #print(totalCount)
         releases.extend(data['nodes'])
         
         for node in data['nodes']:
-            if (node['name'] and node['name'].endswith(version)) or (node['tagName'] and node['tagName'].endswith(version)):
-                return node['url']
+            #print(node['name'], node['tagName'])
+            if (node['name'] and node['name'].strip().endswith(version)) or (node['tagName'] and node['tagName'].strip().endswith(version)):
+                return node
 
         if data['pageInfo']['hasNextPage']:
             variables["after"]=data['pageInfo']['endCursor']
@@ -71,9 +73,9 @@ def get_release_note(owner, name, version):
             break
 
     if len(releases)==totalCount:
-        return releases
+        return None
     else:
         raise Exception('graphql call not functioning properly')
 
 if __name__=='__main__':
-    print(get_release_note('fastify','fastify','3.14.0'))
+    print(get_release_note('swagger-api','swagger-ui','3.0.14'))
